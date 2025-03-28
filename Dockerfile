@@ -1,7 +1,9 @@
 FROM python:3.11-slim AS base
 
 WORKDIR /app
-RUN pip install --no-cache-dir poetry
+RUN apt-get update && apt-get install -y curl && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    ln -s /root/.local/bin/poetry /usr/local/bin/poetry
 
 FROM base AS builder
 WORKDIR /app

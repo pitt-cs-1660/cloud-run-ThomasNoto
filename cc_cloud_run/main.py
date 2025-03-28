@@ -23,17 +23,23 @@ async def read_root(request: Request):
     # ====================================
 
     # stream all votes; count tabs / spaces votes, and get recent votes
+    votes = votes_collection.stream()
+    vote_data = [v.to_dict() for v in votes]
+
+    tabs_count = sum(1 for vote in vote_data if vote["team"] == "TABS")
+    spaces_count = sum(1 for vote in vote_data if vote["team"] == "SPACES")
+
+    recent_votes = sorted(vote_data, key=lambda x: x["time_cast"], reverse=True)[:5]
 
     # ====================================
     # ++++ STOP CODE ++++
     # ====================================
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "tabs_count": 0,
-        "spaces_count": 0,
-        "recent_votes": []
+        "tabs_count": tabs_count,
+        "spaces_count": spaces_count,
+        "recent_votes": recent_votes
     })
-
 
 @app.post("/")
 async def create_vote(team: Annotated[str, Form()]):
@@ -45,7 +51,11 @@ async def create_vote(team: Annotated[str, Form()]):
     # ====================================
 
     # create a new vote document in firestore
-    return {"detail": "Not implemented yet!"}
+    votes_collection.add({
+        "team": team,
+        "time_cast": datetime.datetime.utcnow().isoformat()
+    })
+    return {"detail": "Vote recorded successfully!"}
 
     # ====================================
     # ++++ STOP CODE ++++
