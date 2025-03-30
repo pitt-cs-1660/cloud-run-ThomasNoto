@@ -5,6 +5,8 @@ from google.cloud import firestore
 from typing import Annotated
 import datetime
 
+# GO TO: http://localhost:9080/?auth=false
+
 app = FastAPI()
 
 # mount static files
