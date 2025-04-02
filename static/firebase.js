@@ -115,13 +115,28 @@ async function vote(team) {
     // Returns the current token if it has not expired. Otherwise, this will
     // refresh the token and return a new one.
     try {
+      // calls createIdToken and waits until received
       const token = await createIdToken();
 
       /*
        * ++++ YOUR CODE HERE ++++
        */
-      window.alert(`Not implemented yet!`);
+      // submit a POST request with urlencoded JSON 
+      // and token for auth
+      const response = await fetch("/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: `team=${team}`,
+      });
 
+      if (response.ok) {
+        window.alert("Vote submitted successfully!");
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
     } catch (err) {
       console.log(`Error when submitting vote: ${err}`);
       window.alert('Something went wrong... Please try again!');
