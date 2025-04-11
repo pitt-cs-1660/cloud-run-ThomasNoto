@@ -133,7 +133,7 @@ async function vote(team) {
       });
 
       if (response.ok) {
-        window.alert("Vote submitted successfully!");
+        console.log(`Vote submitted successfully for ${team}`);
       } else {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
